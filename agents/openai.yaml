@@ -1,0 +1,10 @@
+interface:
+  display_name: GG → Agents Sync → Guidance Projection
+  short_description: Keep AGENTS canonical and CLAUDE/GEMINI as routing stubs
+  icon_small: ./assets/icon-small.svg
+  icon_large: ./assets/icon-large.png
+  brand_color: '#22C55E'
+  default_prompt: >-
+    Use when guidance files drift across root or submodules, when AGENTS.md needs content split into
+    topic docs, or when CLAUDE.md/GEMINI.md proxy stubs need resetting to canonical AGENTS.md.
+    Reference agents-sync/SKILL.md when cross-referencing this skill.
