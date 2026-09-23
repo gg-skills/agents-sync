@@ -64,6 +64,7 @@ At minimum, inspect in each repo:
 
 ```bash
 # Audit all guidance files across root + submodules
+# Runner alternatives: bunx tsx / pnpm dlx tsx / deno run -A npm:tsx / node --import tsx / yarn dlx tsx
 npx tsx .agents/skills/agents-sync/scripts/audit-guidance-split.ts
 
 # Audit root guidance alignment (lazy skill index + proxy stubs)
@@ -210,7 +211,7 @@ Use uppercase snake case topic files in each repo `docs/` directory:
 For diagnostic requests, run the inspection commands first before loading any reference files. Load only the subset the task needs.
 
 2. Initialize a timestamped session folder:
-   - `npx tsx .agents/skills/agents-sync/scripts/init-sync-session.ts --name "<session-name>"`
+   - `npx tsx .agents/skills/agents-sync/scripts/init-sync-session.ts --name "<session-name>"`[^rt]
 3. Inventory guidance files across root + submodules.
 4. Audit whether `AGENTS.md` sections are too detailed and whether `CLAUDE.md` / `GEMINI.md` still match the required redirect stub.
 5. Create or update topic docs in each repo `docs/` folder.
@@ -220,7 +221,7 @@ For diagnostic requests, run the inspection commands first before loading any re
 9. If `skills/**` changed, run `npm run skills:sync` and record output.
 10. Summarize what was normalized and any remaining drift inside the session folder.
 11. Publish the completed session folder:
-    - `npx tsx .agents/skills/agents-sync/scripts/finalize-sync-session.ts --session-dir ".agents-sync/YYYY-MM-DD-session-name-selfexplanatory"`
+    - `npx tsx .agents/skills/agents-sync/scripts/finalize-sync-session.ts --session-dir ".agents-sync/YYYY-MM-DD-session-name-selfexplanatory"`[^rt]
     - Add `--include-path <repo-relative-path>` when the same scoped publish should also include root-repo guidance/doc changes alongside the session folder.
 
 ## Script Inventory
@@ -289,7 +290,7 @@ After edits, run relevant checks in each touched repo:
 | Audit script reports missing `docs/HTML_CLASSES.md` reference | The `AGENTS.md` section references a topic doc that does not exist. Create the doc or remove the reference. | `references/split-rubric.md` |
 | `skills:sync` fails after guidance edits | Generated skill indexes may be out of date. Re-run `npm run skills:sync` from repo root after all guidance files are saved. | Workflow step 9 |
 | Proxy stub drift detected | `CLAUDE.md` or `GEMINI.md` contains content beyond a minimal redirect. Copy the expected stub from `references/split-rubric.md` and overwrite the file. | `references/split-rubric.md` |
-| Session folder not published | The finalize script was not run. Execute `npx tsx .agents/skills/agents-sync/scripts/finalize-sync-session.ts --session-dir <path>`. | Script Inventory |
+| Session folder not published | The finalize script was not run. Execute `npx tsx .agents/skills/agents-sync/scripts/finalize-sync-session.ts --session-dir <path>`[^rt]. | Script Inventory |
 | Cross-repo policy inconsistency | One repo's `AGENTS.md` references another repo's `docs/` path. Each repo must have its own local topic doc. | Non-Negotiable Policy rule 4 |
 
 ## Local Corpus Layout
@@ -301,3 +302,5 @@ The `references/` directory contains **1 file** and **no subfolders**:
 ## Temporary Files
 
 If this skill needs to create temporary files, place them under `.tmp/agents-sync/YYYY-MM-DD-{subject}`. The root `.tmp/` directory is already gitignored. Do not create top-level dotfile temp directories.
+
+[^rt]: `npx tsx` accepts any standard runner — `bunx tsx`, `pnpm dlx tsx`, `deno run -A npm:tsx`, `node --import tsx`, or `yarn dlx tsx`. The first five auto-fetch `tsx` on demand; only `node --import tsx` requires `tsx` to be installed locally first (`npm i -D tsx`, or `npm i -g tsx` if you cannot reach the npm registry). Bun users can also skip `tsx` entirely and run TypeScript directly via `bun <script>`. Pick whichever your project ships. The canonical runtime decision table lives in the `skills-manager` skill under `Runtime Selection` (only available when working in the full `gg-skills` monorepo).
